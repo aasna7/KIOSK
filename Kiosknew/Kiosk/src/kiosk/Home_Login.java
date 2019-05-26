@@ -27,6 +27,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import net.proteanit.sql.DbUtils;
 
 public class Home_Login extends javax.swing.JFrame {
     Connection con = null;
@@ -35,6 +36,7 @@ public class Home_Login extends javax.swing.JFrame {
     Kiosk_Log klog=new Kiosk_Log();
     String username= klog.studentlog_;
     static String event_no;
+    String event_id;
     
     
 
@@ -43,63 +45,13 @@ public class Home_Login extends javax.swing.JFrame {
         initComponents();
         System.out.println("if statement");
         show_event();
+        showTableData();
         myprofile.setText(username + "'s profile");
         
     }
 
-    public void connectionDb() {
-        Connection con = null;
-        Statement st = null;
-        PreparedStatement ps = null;
-        Integer EventNum = null;
-        String rowCount = null;
-        try {
-            Class.forName("oracle.jdbc.driver.OracleDriver");
-            con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:aayu", "SYSTEM", "1234Aayu");
-            st = con.createStatement();
-            ResultSet rs1 = st.executeQuery("select COUNT(*) FROM EVENTS");
-                while (rs1.next()) {
-                    rowCount = rs1.getString(1);
-                }
-                
-            ResultSet rs = st.executeQuery("select * from EVENTS");
-            while (rs.next()) {
-                
-                Integer j = 0;
-                Integer x = 0;
-                for(int i = 0; i < Integer.parseInt(rowCount); i++){
-                    JLabel b1 = new JLabel();
-                   
-                    b1.setText(rs.getString(i+1));
-                    //b1.setLocation(100, 10+x);
-                    b1.setFont(new Font("Serif", Font.PLAIN, 20));
-                    b1.setPreferredSize(new Dimension(200,200));
-                    b1.setBounds(100,100, 100, 80);
-                    //x = j + 100;
-                    college_events.add(b1);
-                    b1.setVisible(true);
-                    System.out.print(b1.getText());
-                }
-                //b1.setText(rs.getString(2) + "  " + rs.getString(3) + "   ");
-                
-                
-                
-                
-//             college_events.add(new JLabel(rs.getString(1)));
-//               
-            }
-
-            //System.out.println(value);
-        } catch (Exception e) {
-            e.printStackTrace();
-
-        }
-
-    }
-
-    public void getting_events() {
-
-    }
+   
+   
 
     public class college_events extends javax.swing.JPanel {
 
@@ -112,7 +64,7 @@ public class Home_Login extends javax.swing.JFrame {
                 Class.forName("oracle.jdbc.driver.OracleDriver");
                 con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:aayu", "SYSTEM", "1234Aayu");
                 st = con.createStatement();
-                ResultSet rs2 = st.executeQuery("select * from EVENTS");
+                ResultSet rs2 = st.executeQuery("SELECT * from EVENTS");
                 while (rs2.next()) {
 
 //System.out.println(rs.getString(1)+"  "+rs.getString(2)+"  "+rs.getString(3));}
@@ -135,7 +87,7 @@ public class Home_Login extends javax.swing.JFrame {
 
         public college_events() {
             initComponents();
-            connectionDb();
+            
             connection();
         }
 
@@ -249,6 +201,43 @@ public class Home_Login extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "ERROR");
         }
 }
+    
+    public void showTableData(){
+       try{
+        Class.forName("oracle.jdbc.driver.OracleDriver");
+        con=DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:orcl","system","123456");
+        Statement st= con.createStatement();
+        ResultSet rs = st.executeQuery("SELECT EVENT_ID,EVENT_NAME,LOCATION,TIME,EVENT_DATE from EVENT");
+        System.out.print("running");
+        eventbook_table.setModel(DbUtils.resultSetToTableModel(rs));
+      }
+    catch(Exception ex){
+        JOptionPane.showMessageDialog(null,ex);
+        
+    }
+   }
+    
+    public void book_check()
+    {
+        String userbookcheck=username;
+        
+        try
+        {
+         Class.forName("oracle.jdbc.driver.OracleDriver");
+        con=DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:orcl","system","123456");
+        Statement st= con.createStatement();
+        ResultSet rs0 = st.executeQuery("SELECT * FROM BOOKING WHERE EVENT_ID='"+event_id+"' AND STUDENT_ID='"+userbookcheck+"'");
+        if (rs0.next())
+        {
+            book_book.enable(false);
+            book_book.setText("BOOKED");
+        }
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -283,8 +272,21 @@ public class Home_Login extends javax.swing.JFrame {
         college_event = new javax.swing.JScrollPane();
         college_events1 = new javax.swing.JPanel();
         college_title1 = new javax.swing.JLabel();
-        jTextField3 = new javax.swing.JTextField();
         search_college1 = new javax.swing.JButton();
+        event_book = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        location_book = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        time_book = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
+        date_book = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        desc_book = new javax.swing.JTextPane();
+        eveimg = new javax.swing.JLabel();
+        book_book = new javax.swing.JButton();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        eventbook_table = new javax.swing.JTable();
         Community_Event1 = new javax.swing.JPanel();
         community_events = new javax.swing.JScrollPane();
         community_event = new javax.swing.JPanel();
@@ -292,18 +294,6 @@ public class Home_Login extends javax.swing.JFrame {
         search_community1 = new javax.swing.JButton();
         jTextField4 = new javax.swing.JTextField();
         Gallery = new javax.swing.JPanel();
-        Event = new javax.swing.JPanel();
-        Ev_MaxTab = new javax.swing.JTabbedPane();
-        College_Event = new javax.swing.JPanel();
-        college_title = new javax.swing.JLabel();
-        search_college = new javax.swing.JButton();
-        jTextField1 = new javax.swing.JTextField();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        college_events = new javax.swing.JPanel();
-        Community_Event = new javax.swing.JPanel();
-        comunity_title = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
-        search_community = new javax.swing.JButton();
         Top = new javax.swing.JPanel();
         Logo = new javax.swing.JLabel();
         Slogan = new javax.swing.JLabel();
@@ -480,12 +470,6 @@ public class Home_Login extends javax.swing.JFrame {
         college_title1.setFont(new java.awt.Font("Baskerville Old Face", 1, 24)); // NOI18N
         college_title1.setText("College Events");
 
-        jTextField3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField3ActionPerformed(evt);
-            }
-        });
-
         search_college1.setFont(new java.awt.Font("Baskerville Old Face", 0, 18)); // NOI18N
         search_college1.setText("Search");
         search_college1.addActionListener(new java.awt.event.ActionListener() {
@@ -494,28 +478,133 @@ public class Home_Login extends javax.swing.JFrame {
             }
         });
 
+        event_book.setFont(new java.awt.Font("Baskerville Old Face", 1, 18)); // NOI18N
+        event_book.setText("Event Name");
+
+        jLabel4.setFont(new java.awt.Font("Baskerville Old Face", 1, 18)); // NOI18N
+        jLabel4.setText("Event Name");
+
+        jLabel5.setFont(new java.awt.Font("Baskerville Old Face", 1, 18)); // NOI18N
+        jLabel5.setText("Location");
+
+        location_book.setFont(new java.awt.Font("Baskerville Old Face", 1, 18)); // NOI18N
+        location_book.setText("Location");
+
+        jLabel7.setFont(new java.awt.Font("Baskerville Old Face", 1, 18)); // NOI18N
+        jLabel7.setText("Time");
+
+        time_book.setFont(new java.awt.Font("Baskerville Old Face", 1, 18)); // NOI18N
+        time_book.setText("Time");
+
+        jLabel9.setFont(new java.awt.Font("Baskerville Old Face", 1, 18)); // NOI18N
+        jLabel9.setText("Date");
+
+        date_book.setFont(new java.awt.Font("Baskerville Old Face", 1, 18)); // NOI18N
+        date_book.setText("Date");
+
+        desc_book.setEditable(false);
+        jScrollPane2.setViewportView(desc_book);
+
+        eveimg.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+
+        book_book.setFont(new java.awt.Font("Baskerville Old Face", 1, 18)); // NOI18N
+        book_book.setText("BOOK");
+        book_book.setBorder(new javax.swing.border.MatteBorder(null));
+        book_book.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                book_bookActionPerformed(evt);
+            }
+        });
+
+        eventbook_table.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
+            },
+            new String [] {
+                "Event Id", "Event Name", "Location", "Time", "Date"
+            }
+        ));
+        eventbook_table.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                eventbook_tableMouseClicked(evt);
+            }
+        });
+        jScrollPane3.setViewportView(eventbook_table);
+
         javax.swing.GroupLayout college_events1Layout = new javax.swing.GroupLayout(college_events1);
         college_events1.setLayout(college_events1Layout);
         college_events1Layout.setHorizontalGroup(
             college_events1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(college_events1Layout.createSequentialGroup()
-                .addGap(19, 19, 19)
-                .addComponent(college_title1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 776, Short.MAX_VALUE)
-                .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(36, 36, 36)
+                .addGroup(college_events1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(college_title1)
+                    .addGroup(college_events1Layout.createSequentialGroup()
+                        .addGroup(college_events1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(college_events1Layout.createSequentialGroup()
+                                .addGroup(college_events1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel4)
+                                    .addComponent(jLabel5)
+                                    .addComponent(jLabel7)
+                                    .addComponent(jLabel9))
+                                .addGap(46, 46, 46)
+                                .addGroup(college_events1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(date_book)
+                                    .addComponent(time_book)
+                                    .addComponent(event_book)
+                                    .addComponent(location_book))))
+                        .addGap(72, 72, 72)
+                        .addComponent(eveimg, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(college_events1Layout.createSequentialGroup()
+                        .addGap(90, 90, 90)
+                        .addComponent(book_book, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 149, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 493, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(205, 205, 205)
                 .addComponent(search_college1)
                 .addGap(123, 123, 123))
         );
         college_events1Layout.setVerticalGroup(
             college_events1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(college_events1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(college_events1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(college_title1)
-                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(search_college1))
-                .addContainerGap(3827, Short.MAX_VALUE))
+                .addGroup(college_events1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(college_events1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(search_college1))
+                    .addGroup(college_events1Layout.createSequentialGroup()
+                        .addGap(30, 30, 30)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(college_events1Layout.createSequentialGroup()
+                        .addGap(46, 46, 46)
+                        .addComponent(college_title1)
+                        .addGap(26, 26, 26)
+                        .addGroup(college_events1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(college_events1Layout.createSequentialGroup()
+                                .addGroup(college_events1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel4)
+                                    .addComponent(event_book))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(college_events1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel5)
+                                    .addComponent(location_book))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(college_events1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel7)
+                                    .addComponent(time_book))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(college_events1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel9)
+                                    .addComponent(date_book))
+                                .addGap(18, 18, 18)
+                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(eveimg, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addComponent(book_book, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(3446, Short.MAX_VALUE))
         );
 
         college_event.setViewportView(college_events1);
@@ -615,7 +704,7 @@ public class Home_Login extends javax.swing.JFrame {
         Gallery.setLayout(GalleryLayout);
         GalleryLayout.setHorizontalGroup(
             GalleryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1314, Short.MAX_VALUE)
+            .addGap(0, 1438, Short.MAX_VALUE)
         );
         GalleryLayout.setVerticalGroup(
             GalleryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -624,134 +713,10 @@ public class Home_Login extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("Help", Gallery);
 
-        college_title.setFont(new java.awt.Font("Baskerville Old Face", 1, 24)); // NOI18N
-        college_title.setText("College Events");
-
-        search_college.setFont(new java.awt.Font("Baskerville Old Face", 0, 18)); // NOI18N
-        search_college.setText("Search");
-        search_college.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                search_collegeActionPerformed(evt);
-            }
-        });
-
-        jTextField1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField1ActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout college_eventsLayout = new javax.swing.GroupLayout(college_events);
-        college_events.setLayout(college_eventsLayout);
-        college_eventsLayout.setHorizontalGroup(
-            college_eventsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1496, Short.MAX_VALUE)
-        );
-        college_eventsLayout.setVerticalGroup(
-            college_eventsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 617, Short.MAX_VALUE)
-        );
-
-        jScrollPane1.setViewportView(college_events);
-
-        javax.swing.GroupLayout College_EventLayout = new javax.swing.GroupLayout(College_Event);
-        College_Event.setLayout(College_EventLayout);
-        College_EventLayout.setHorizontalGroup(
-            College_EventLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(College_EventLayout.createSequentialGroup()
-                .addGap(50, 50, 50)
-                .addComponent(college_title)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 625, Short.MAX_VALUE)
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(search_college)
-                .addGap(144, 144, 144))
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-        );
-        College_EventLayout.setVerticalGroup(
-            College_EventLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(College_EventLayout.createSequentialGroup()
-                .addGroup(College_EventLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(College_EventLayout.createSequentialGroup()
-                        .addGap(39, 39, 39)
-                        .addGroup(College_EventLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(search_college)
-                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, College_EventLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(college_title)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 581, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(51, Short.MAX_VALUE))
-        );
-
-        Ev_MaxTab.addTab("College Events", College_Event);
-
-        comunity_title.setFont(new java.awt.Font("Baskerville Old Face", 1, 24)); // NOI18N
-        comunity_title.setText("Community Events");
-
-        jTextField2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField2ActionPerformed(evt);
-            }
-        });
-
-        search_community.setFont(new java.awt.Font("Baskerville Old Face", 0, 18)); // NOI18N
-        search_community.setText("Search");
-        search_community.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                search_communityActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout Community_EventLayout = new javax.swing.GroupLayout(Community_Event);
-        Community_Event.setLayout(Community_EventLayout);
-        Community_EventLayout.setHorizontalGroup(
-            Community_EventLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(Community_EventLayout.createSequentialGroup()
-                .addGap(43, 43, 43)
-                .addComponent(comunity_title)
-                .addGap(122, 122, 122)
-                .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(search_community)
-                .addContainerGap(611, Short.MAX_VALUE))
-        );
-        Community_EventLayout.setVerticalGroup(
-            Community_EventLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(Community_EventLayout.createSequentialGroup()
-                .addGap(31, 31, 31)
-                .addGroup(Community_EventLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(comunity_title)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(search_community))
-                .addContainerGap(647, Short.MAX_VALUE))
-        );
-
-        Ev_MaxTab.addTab("Community Events", Community_Event);
-
-        javax.swing.GroupLayout EventLayout = new javax.swing.GroupLayout(Event);
-        Event.setLayout(EventLayout);
-        EventLayout.setHorizontalGroup(
-            EventLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(EventLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(Ev_MaxTab)
-                .addContainerGap())
-        );
-        EventLayout.setVerticalGroup(
-            EventLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, EventLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(Ev_MaxTab, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-        );
-
-        jTabbedPane1.addTab("Eventto be deletd", Event);
-
+        Top.setBackground(new java.awt.Color(255, 255, 255));
         Top.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
-        Logo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/kiosk/KIosksmallLogo.png"))); // NOI18N
+        Logo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/kiosk/uobfinal.jpg"))); // NOI18N
 
         Slogan.setFont(new java.awt.Font("Sofachrome Rg", 0, 24)); // NOI18N
         Slogan.setText("Kiosk For Your Service");
@@ -788,21 +753,24 @@ public class Home_Login extends javax.swing.JFrame {
         TopLayout.setHorizontalGroup(
             TopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(TopLayout.createSequentialGroup()
-                .addGap(65, 65, 65)
-                .addComponent(Logo, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(100, 100, 100)
+                .addContainerGap()
+                .addComponent(Logo, javax.swing.GroupLayout.PREFERRED_SIZE, 228, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(68, 68, 68)
                 .addComponent(Slogan)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 456, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         TopLayout.setVerticalGroup(
             TopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(Logo, javax.swing.GroupLayout.DEFAULT_SIZE, 145, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, TopLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(80, Short.MAX_VALUE)
                 .addComponent(Slogan)
                 .addGap(57, 57, 57))
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(TopLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(Logo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         myprofile.setFont(new java.awt.Font("Baskerville Old Face", 0, 18)); // NOI18N
@@ -849,7 +817,7 @@ public class Home_Login extends javax.swing.JFrame {
                     .addComponent(logout, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 729, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(20, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -859,22 +827,6 @@ public class Home_Login extends javax.swing.JFrame {
 Profile_View proview =new Profile_View();
 proview.setVisible(true);// TODO add your handling code here:
     }//GEN-LAST:event_myprofileActionPerformed
-
-    private void search_collegeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_search_collegeActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_search_collegeActionPerformed
-
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField1ActionPerformed
-
-    private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField2ActionPerformed
-
-    private void search_communityActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_search_communityActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_search_communityActionPerformed
 
     private void event3detailsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_event3detailsActionPerformed
 try{
@@ -915,7 +867,8 @@ catch(Exception e)
     }//GEN-LAST:event_event4detailsActionPerformed
 
     private void learnmoreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_learnmoreActionPerformed
-        // TODO add your handling code here:
+AboutUs abus=new AboutUs();
+abus.setVisible(true);        // TODO add your handling code here:
     }//GEN-LAST:event_learnmoreActionPerformed
 
     private void logoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutActionPerformed
@@ -987,10 +940,6 @@ catch(Exception e)
         // TODO add your handling code here:
     }//GEN-LAST:event_search_college1ActionPerformed
 
-    private void jTextField3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField3ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField3ActionPerformed
-
     private void search_community1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_search_community1ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_search_community1ActionPerformed
@@ -998,6 +947,62 @@ catch(Exception e)
     private void jTextField4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField4ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField4ActionPerformed
+
+    private void book_bookActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_book_bookActionPerformed
+
+        String usertobook= username;
+        try{
+            Class.forName("oracle.jdbc.driver.OracleDriver");
+            con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:orcl", "system", "123456");
+            stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery("INSERT INTO BOOKING(BOOKING_ID,EVENT_ID,STUDENT_ID) VALUES(STUDENT_SEQ.NEXTVAL,'"+event_id+"','"+usertobook+"')" );
+            book_book.setText("Booked");
+            
+    }
+    catch(Exception e)
+    {
+        e.printStackTrace();
+    }
+        // TODO add your handling code here:
+    }//GEN-LAST:event_book_bookActionPerformed
+
+    private void eventbook_tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_eventbook_tableMouseClicked
+        // TODO add your handling code here:
+        int row= eventbook_table.getSelectedRow();
+    String click=(eventbook_table.getModel().getValueAt(row,0).toString());
+    try{
+            Class.forName("oracle.jdbc.driver.OracleDriver");
+            con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:orcl", "system", "123456");
+            stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT * FROM EVENT WHERE EVENT_ID='"+click+"' ");
+            if (rs.next())
+            {
+                event_id=rs.getString("EVENT_ID");
+                event_book.setText(rs.getString("EVENT_NAME"));
+                location_book.setText(rs.getString("LOCATION"));
+                time_book.setText(rs.getString("TIME"));
+                date_book.setText(rs.getString("EVENT_DATE"));
+                desc_book.setText(rs.getString("DESCRIPTION"));
+                byte[] imgData = null;
+                 Blob img  = rs.getBlob("EVENT_IMAGE");
+                 imgData = img.getBytes(1,(int)img.length());
+                 BufferedImage image = ImageIO.read(new ByteArrayInputStream(imgData));
+                 eveimg.setIcon(new ImageIcon(image.getScaledInstance(175,208,Image.SCALE_SMOOTH)));
+                book_book.setText("BOOK");
+                book_book.enable(true);
+                book_check();
+            }
+            
+            else
+            {
+                System.out.println("Error");
+            }
+    }
+    catch(Exception e)
+    {
+        e.printStackTrace();
+    }
+    }//GEN-LAST:event_eventbook_tableMouseClicked
 
     /**
      * @param args the command line arguments
@@ -1044,13 +1049,9 @@ catch(Exception e)
      */
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel College_Event;
     private javax.swing.JPanel College_Event1;
-    private javax.swing.JPanel Community_Event;
     private javax.swing.JPanel Community_Event1;
-    private javax.swing.JTabbedPane Ev_MaxTab;
     private javax.swing.JTabbedPane Ev_MaxTab1;
-    private javax.swing.JPanel Event;
     private javax.swing.JPanel Event1;
     private javax.swing.JPanel Gallery;
     private javax.swing.JPanel Home;
@@ -1058,15 +1059,16 @@ catch(Exception e)
     private javax.swing.JLabel Logo;
     private javax.swing.JLabel Slogan;
     private javax.swing.JPanel Top;
+    private javax.swing.JButton book_book;
     private javax.swing.JScrollPane college_event;
-    private javax.swing.JPanel college_events;
     private javax.swing.JPanel college_events1;
-    private javax.swing.JLabel college_title;
     private javax.swing.JLabel college_title1;
     private javax.swing.JPanel community_event;
     private javax.swing.JScrollPane community_events;
-    private javax.swing.JLabel comunity_title;
     private javax.swing.JLabel comunity_title1;
+    private javax.swing.JLabel date_book;
+    private javax.swing.JTextPane desc_book;
+    private javax.swing.JLabel eveimg;
     private javax.swing.JLabel event1;
     private javax.swing.JButton event1details;
     private javax.swing.JLabel event2;
@@ -1077,27 +1079,31 @@ catch(Exception e)
     private javax.swing.JButton event4details;
     private javax.swing.JLabel event5;
     private javax.swing.JButton event5details;
+    private javax.swing.JLabel event_book;
     private javax.swing.JLabel event_name1;
     private javax.swing.JLabel event_name2;
     private javax.swing.JLabel event_name3;
     private javax.swing.JLabel event_name4;
     private javax.swing.JLabel event_name5;
+    private javax.swing.JTable eventbook_table;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
     private javax.swing.JTextField jTextField4;
     private javax.swing.JButton learnmore;
+    private javax.swing.JLabel location_book;
     private javax.swing.JButton logout;
     private javax.swing.JButton myprofile;
-    private javax.swing.JButton search_college;
     private javax.swing.JButton search_college1;
-    private javax.swing.JButton search_community;
     private javax.swing.JButton search_community1;
+    private javax.swing.JLabel time_book;
     private javax.swing.JLabel top;
     // End of variables declaration//GEN-END:variables
 }

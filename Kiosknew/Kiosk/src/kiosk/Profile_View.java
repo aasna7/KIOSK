@@ -48,6 +48,7 @@ public class Profile_View extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jButton1 = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         levelview = new javax.swing.JLabel();
         fullnameview = new javax.swing.JLabel();
@@ -67,6 +68,16 @@ public class Profile_View extends javax.swing.JFrame {
         setLocation(new java.awt.Point(300, 100));
         setMinimumSize(new java.awt.Dimension(550, 500));
         getContentPane().setLayout(null);
+
+        jButton1.setFont(new java.awt.Font("Baskerville Old Face", 1, 14)); // NOI18N
+        jButton1.setText("My Bookings");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jButton1);
+        jButton1.setBounds(390, 60, 120, 30);
 
         jLabel1.setFont(new java.awt.Font("Sofachrome Rg", 0, 14)); // NOI18N
         jLabel1.setText("MY Profile");
@@ -146,6 +157,12 @@ this.dispose();
         Profile_Update proup=new Profile_Update();
 proup.setVisible(true);// TODO add your handling code here:
     }//GEN-LAST:event_updateActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+MyBookings mbk= new MyBookings();
+mbk.setVisible(true);
+// TODO add your handling code here:
+    }//GEN-LAST:event_jButton1ActionPerformed
 public void displaying()
 {
     Kiosk_Log klog = new Kiosk_Log();
@@ -221,6 +238,7 @@ public void displaying()
     private javax.swing.JLabel addressview;
     private javax.swing.JLabel contactview;
     private javax.swing.JLabel fullnameview;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;

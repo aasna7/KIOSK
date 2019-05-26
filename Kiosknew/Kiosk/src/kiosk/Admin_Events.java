@@ -31,6 +31,9 @@ import net.proteanit.sql.DbUtils;
 
 public class Admin_Events extends javax.swing.JFrame {
 
+    Connection con = null;
+    Statement stmt = null;
+    PreparedStatement ps = null;
    
   Connection con1=null;
     Statement st1=null;
@@ -38,8 +41,10 @@ public class Admin_Events extends javax.swing.JFrame {
     ResultSet rs=null;
     FileInputStream imageInputStream = null;
     static String path;
+    static String event_no;
     public Admin_Events() {
         initComponents();
+        show_event();
         showTableData();
         showTableData1();
         showTableData2();
@@ -57,30 +62,27 @@ public class Admin_Events extends javax.swing.JFrame {
 
         jTabbedPane1 = new javax.swing.JTabbedPane();
         Hometab = new javax.swing.JPanel();
-        home1 = new javax.swing.JLabel();
-        home2 = new javax.swing.JLabel();
-        home3 = new javax.swing.JLabel();
-        home4 = new javax.swing.JLabel();
-        home5 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        btnchange = new javax.swing.JButton();
-        jLabel10 = new javax.swing.JLabel();
-        btnsee1 = new javax.swing.JButton();
-        jLabel13 = new javax.swing.JLabel();
-        btnsee2 = new javax.swing.JButton();
-        jLabel14 = new javax.swing.JLabel();
-        btnsee3 = new javax.swing.JButton();
-        jLabel15 = new javax.swing.JLabel();
-        btnsee4 = new javax.swing.JButton();
-        jLabel16 = new javax.swing.JLabel();
-        btnsee5 = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        event5 = new javax.swing.JLabel();
+        event1 = new javax.swing.JLabel();
+        event2 = new javax.swing.JLabel();
+        event3 = new javax.swing.JLabel();
+        event4 = new javax.swing.JLabel();
+        event_name5 = new javax.swing.JLabel();
+        event_name1 = new javax.swing.JLabel();
+        event_name2 = new javax.swing.JLabel();
+        event_name3 = new javax.swing.JLabel();
+        event_name4 = new javax.swing.JLabel();
+        event5details = new javax.swing.JButton();
+        event1details = new javax.swing.JButton();
+        event2details = new javax.swing.JButton();
+        event3details = new javax.swing.JButton();
+        event4details = new javax.swing.JButton();
         Eventstab = new javax.swing.JPanel();
+        jScrollPane4 = new javax.swing.JScrollPane();
         jTabbedPane2 = new javax.swing.JTabbedPane();
         clzevent = new javax.swing.JPanel();
-        jScrollPane10 = new javax.swing.JScrollPane();
         jPanel5 = new javax.swing.JPanel();
-        jScrollPane11 = new javax.swing.JScrollPane();
-        Table1 = new javax.swing.JTable();
         jLabel37 = new javax.swing.JLabel();
         jLabel40 = new javax.swing.JLabel();
         jLabel42 = new javax.swing.JLabel();
@@ -103,11 +105,10 @@ public class Admin_Events extends javax.swing.JFrame {
         imglevel = new javax.swing.JLabel();
         btnchoose = new javax.swing.JButton();
         date = new org.jdesktop.swingx.JXDatePicker();
+        jScrollPane11 = new javax.swing.JScrollPane();
+        Table1 = new javax.swing.JTable();
         cmtevent = new javax.swing.JPanel();
-        jScrollPane4 = new javax.swing.JScrollPane();
         jPanel2 = new javax.swing.JPanel();
-        jLabel49 = new javax.swing.JLabel();
-        jLabel50 = new javax.swing.JLabel();
         jLabel51 = new javax.swing.JLabel();
         jLabel52 = new javax.swing.JLabel();
         jLabel53 = new javax.swing.JLabel();
@@ -115,7 +116,6 @@ public class Admin_Events extends javax.swing.JFrame {
         jLabel55 = new javax.swing.JLabel();
         jLabel56 = new javax.swing.JLabel();
         jLabel57 = new javax.swing.JLabel();
-        evnt_id1 = new javax.swing.JTextField();
         evnt_name1 = new javax.swing.JTextField();
         location1 = new javax.swing.JTextField();
         time1 = new javax.swing.JTextField();
@@ -124,11 +124,15 @@ public class Admin_Events extends javax.swing.JFrame {
         btnadd1 = new javax.swing.JButton();
         btnupdate2 = new javax.swing.JButton();
         btndelete2 = new javax.swing.JButton();
-        btnsearch2 = new javax.swing.JButton();
         imglevel1 = new javax.swing.JLabel();
         btnchoose1 = new javax.swing.JButton();
         jScrollPane12 = new javax.swing.JScrollPane();
         Table2 = new javax.swing.JTable();
+        evnt_id1 = new javax.swing.JTextField();
+        jLabel50 = new javax.swing.JLabel();
+        btnsearch2 = new javax.swing.JButton();
+        jLabel49 = new javax.swing.JLabel();
+        jXDatePicker1 = new org.jdesktop.swingx.JXDatePicker();
         Helptab = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
         jLabel17 = new javax.swing.JLabel();
@@ -141,7 +145,6 @@ public class Admin_Events extends javax.swing.JFrame {
         jLabel41 = new javax.swing.JLabel();
         std_id = new javax.swing.JTextField();
         email = new javax.swing.JTextField();
-        btndelete = new javax.swing.JButton();
         btnupdate = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         Table = new javax.swing.JTable();
@@ -154,6 +157,8 @@ public class Admin_Events extends javax.swing.JFrame {
         btnlogout = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setMinimumSize(new java.awt.Dimension(1329, 1100));
+        setPreferredSize(new java.awt.Dimension(1329, 956));
 
         jTabbedPane1.setBackground(new java.awt.Color(255, 255, 255));
         jTabbedPane1.setFont(new java.awt.Font("Baskerville Old Face", 1, 18)); // NOI18N
@@ -162,106 +167,95 @@ public class Admin_Events extends javax.swing.JFrame {
         Hometab.setFont(new java.awt.Font("Chiller", 1, 14)); // NOI18N
         Hometab.setLayout(null);
 
-        home1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/kiosk/priscilla-du-preez-775570-unsplash.jpg"))); // NOI18N
-        home1.setText("jLabel6");
-        home1.setBorder(javax.swing.BorderFactory.createMatteBorder(1, 1, 1, 1, new java.awt.Color(51, 255, 204)));
-        Hometab.add(home1);
-        home1.setBounds(0, 128, 205, 190);
+        jLabel1.setFont(new java.awt.Font("Baskerville Old Face", 1, 24)); // NOI18N
+        jLabel1.setText("EARLY EVENTS");
+        Hometab.add(jLabel1);
+        jLabel1.setBounds(410, 20, 190, 20);
 
-        home2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/kiosk/martins-zemlickis-57243-unsplash.jpg"))); // NOI18N
-        home2.setText("jLabel5");
-        home2.setBorder(javax.swing.BorderFactory.createMatteBorder(1, 1, 1, 1, new java.awt.Color(51, 255, 204)));
-        Hometab.add(home2);
-        home2.setBounds(248, 127, 202, 190);
+        event5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        Hometab.add(event5);
+        event5.setBounds(1060, 90, 175, 208);
 
-        home3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/kiosk/md-duran-628456-unsplash.jpg"))); // NOI18N
-        home3.setText("jLabel7");
-        home3.setBorder(javax.swing.BorderFactory.createMatteBorder(1, 1, 1, 1, new java.awt.Color(51, 255, 204)));
-        Hometab.add(home3);
-        home3.setBounds(493, 127, 192, 190);
+        event1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        Hometab.add(event1);
+        event1.setBounds(140, 90, 175, 208);
 
-        home4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/kiosk/kal-visuals-705792-unsplash.jpg"))); // NOI18N
-        home4.setText("jLabel8");
-        home4.setBorder(javax.swing.BorderFactory.createMatteBorder(1, 1, 1, 1, new java.awt.Color(51, 255, 204)));
-        Hometab.add(home4);
-        home4.setBounds(736, 127, 188, 190);
+        event2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        Hometab.add(event2);
+        event2.setBounds(370, 90, 175, 208);
 
-        home5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/kiosk/Football.jpg"))); // NOI18N
-        home5.setText("jLabel9");
-        home5.setBorder(javax.swing.BorderFactory.createMatteBorder(1, 1, 1, 1, new java.awt.Color(51, 255, 204)));
-        Hometab.add(home5);
-        home5.setBounds(970, 130, 193, 190);
+        event3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        Hometab.add(event3);
+        event3.setBounds(600, 90, 175, 208);
 
-        jTextField1.setFont(new java.awt.Font("Baskerville Old Face", 0, 24)); // NOI18N
-        jTextField1.setText("EARLY EVENTS");
-        jTextField1.setBorder(null);
-        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+        event4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        Hometab.add(event4);
+        event4.setBounds(830, 90, 175, 208);
+
+        event_name5.setText("See details");
+        Hometab.add(event_name5);
+        event_name5.setBounds(1120, 310, 52, 14);
+
+        event_name1.setText("See details");
+        Hometab.add(event_name1);
+        event_name1.setBounds(200, 310, 52, 14);
+
+        event_name2.setText("See details");
+        Hometab.add(event_name2);
+        event_name2.setBounds(420, 310, 52, 14);
+
+        event_name3.setText("See details");
+        Hometab.add(event_name3);
+        event_name3.setBounds(660, 310, 52, 14);
+
+        event_name4.setText("See details");
+        Hometab.add(event_name4);
+        event_name4.setBounds(880, 310, 52, 14);
+
+        event5details.setText("Show details");
+        event5details.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField1ActionPerformed(evt);
+                event5detailsActionPerformed(evt);
             }
         });
-        Hometab.add(jTextField1);
-        jTextField1.setBounds(489, 43, 177, 24);
+        Hometab.add(event5details);
+        event5details.setBounds(1100, 330, 93, 23);
 
-        btnchange.setFont(new java.awt.Font("Chiller", 3, 24)); // NOI18N
-        btnchange.setText("Change Events");
-        btnchange.addActionListener(new java.awt.event.ActionListener() {
+        event1details.setText("Show details");
+        event1details.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnchangeActionPerformed(evt);
+                event1detailsActionPerformed(evt);
             }
         });
-        Hometab.add(btnchange);
-        btnchange.setBounds(1000, 400, 160, 37);
+        Hometab.add(event1details);
+        event1details.setBounds(180, 330, 93, 23);
 
-        jLabel10.setFont(new java.awt.Font("Baskerville Old Face", 3, 18)); // NOI18N
-        jLabel10.setText("The Musical Night");
-        Hometab.add(jLabel10);
-        jLabel10.setBounds(20, 320, 160, 30);
+        event2details.setText("Show details");
+        event2details.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                event2detailsActionPerformed(evt);
+            }
+        });
+        Hometab.add(event2details);
+        event2details.setBounds(400, 330, 93, 23);
 
-        btnsee1.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        btnsee1.setText("see details");
-        Hometab.add(btnsee1);
-        btnsee1.setBounds(50, 350, 100, 23);
+        event3details.setText("Show details");
+        event3details.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                event3detailsActionPerformed(evt);
+            }
+        });
+        Hometab.add(event3details);
+        event3details.setBounds(640, 330, 93, 23);
 
-        jLabel13.setFont(new java.awt.Font("Baskerville Old Face", 3, 18)); // NOI18N
-        jLabel13.setText("The Marathon");
-        Hometab.add(jLabel13);
-        jLabel13.setBounds(290, 320, 130, 19);
-
-        btnsee2.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        btnsee2.setText("see details");
-        Hometab.add(btnsee2);
-        btnsee2.setBounds(310, 350, 93, 23);
-
-        jLabel14.setFont(new java.awt.Font("Baskerville Old Face", 3, 18)); // NOI18N
-        jLabel14.setText("The Graduation Ceremony");
-        Hometab.add(jLabel14);
-        jLabel14.setBounds(480, 320, 220, 19);
-
-        btnsee3.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        btnsee3.setText("see details");
-        Hometab.add(btnsee3);
-        btnsee3.setBounds(540, 350, 100, 23);
-
-        jLabel15.setFont(new java.awt.Font("Baskerville Old Face", 3, 18)); // NOI18N
-        jLabel15.setText("Movie Making");
-        Hometab.add(jLabel15);
-        jLabel15.setBounds(770, 320, 120, 19);
-
-        btnsee4.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        btnsee4.setText("see details");
-        Hometab.add(btnsee4);
-        btnsee4.setBounds(780, 350, 93, 23);
-
-        jLabel16.setFont(new java.awt.Font("Baskerville Old Face", 3, 18)); // NOI18N
-        jLabel16.setText("Sports Events");
-        Hometab.add(jLabel16);
-        jLabel16.setBounds(1010, 320, 120, 19);
-
-        btnsee5.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        btnsee5.setText("see details");
-        Hometab.add(btnsee5);
-        btnsee5.setBounds(1020, 350, 100, 23);
+        event4details.setText("Show details");
+        event4details.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                event4detailsActionPerformed(evt);
+            }
+        });
+        Hometab.add(event4details);
+        event4details.setBounds(860, 330, 93, 23);
 
         jTabbedPane1.addTab("Home", Hometab);
 
@@ -270,57 +264,33 @@ public class Admin_Events extends javax.swing.JFrame {
         clzevent.setFont(new java.awt.Font("Baskerville Old Face", 1, 14)); // NOI18N
         clzevent.setPreferredSize(new java.awt.Dimension(1304, 1000));
 
-        jScrollPane10.setPreferredSize(new java.awt.Dimension(1314, 600));
-
         jPanel5.setBackground(new java.awt.Color(255, 255, 255));
 
-        Table1.setFont(new java.awt.Font("Baskerville Old Face", 1, 18)); // NOI18N
-        Table1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null}
-            },
-            new String [] {
-                "Event_Id", "Event Name", "Location", "Time", "Event_Date", "Description", "Admin_Id", "Event_Image"
-            }
-        ) {
-            boolean[] canEdit = new boolean [] {
-                true, true, true, true, true, true, true, false
-            };
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        jScrollPane11.setViewportView(Table1);
-
-        jLabel37.setFont(new java.awt.Font("Baskerville Old Face", 1, 36)); // NOI18N
+        jLabel37.setFont(new java.awt.Font("Baskerville Old Face", 1, 24)); // NOI18N
         jLabel37.setText("Event Details");
 
-        jLabel40.setFont(new java.awt.Font("Baskerville Old Face", 1, 24)); // NOI18N
+        jLabel40.setFont(new java.awt.Font("Baskerville Old Face", 1, 18)); // NOI18N
         jLabel40.setText("Event Id ");
 
-        jLabel42.setFont(new java.awt.Font("Baskerville Old Face", 1, 24)); // NOI18N
+        jLabel42.setFont(new java.awt.Font("Baskerville Old Face", 1, 18)); // NOI18N
         jLabel42.setText("Event Name");
 
-        jLabel43.setFont(new java.awt.Font("Baskerville Old Face", 1, 24)); // NOI18N
+        jLabel43.setFont(new java.awt.Font("Baskerville Old Face", 1, 18)); // NOI18N
         jLabel43.setText("Location");
 
-        jLabel44.setFont(new java.awt.Font("Baskerville Old Face", 1, 24)); // NOI18N
+        jLabel44.setFont(new java.awt.Font("Baskerville Old Face", 1, 18)); // NOI18N
         jLabel44.setText("Time");
 
-        jLabel45.setFont(new java.awt.Font("Baskerville Old Face", 1, 24)); // NOI18N
+        jLabel45.setFont(new java.awt.Font("Baskerville Old Face", 1, 18)); // NOI18N
         jLabel45.setText("Event Date");
 
-        jLabel46.setFont(new java.awt.Font("Baskerville Old Face", 1, 24)); // NOI18N
+        jLabel46.setFont(new java.awt.Font("Baskerville Old Face", 1, 18)); // NOI18N
         jLabel46.setText("Description");
 
-        jLabel47.setFont(new java.awt.Font("Baskerville Old Face", 1, 24)); // NOI18N
+        jLabel47.setFont(new java.awt.Font("Baskerville Old Face", 1, 18)); // NOI18N
         jLabel47.setText("Admin Id");
 
-        jLabel48.setFont(new java.awt.Font("Baskerville Old Face", 1, 24)); // NOI18N
+        jLabel48.setFont(new java.awt.Font("Baskerville Old Face", 1, 18)); // NOI18N
         jLabel48.setText("Event Image");
 
         evnt_id.setFont(new java.awt.Font("Baskerville Old Face", 1, 14)); // NOI18N
@@ -382,6 +352,28 @@ public class Admin_Events extends javax.swing.JFrame {
             }
         });
 
+        Table1.setFont(new java.awt.Font("Baskerville Old Face", 1, 18)); // NOI18N
+        Table1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null}
+            },
+            new String [] {
+                "Event_Id", "Event Name", "Location", "Time", "Event_Date", "Description", "Admin_Id", "Event_Image"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                true, true, true, true, true, true, true, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane11.setViewportView(Table1);
+
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
@@ -390,166 +382,154 @@ public class Admin_Events extends javax.swing.JFrame {
                 .addGap(21, 21, 21)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addComponent(btnadd, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(79, 79, 79)
-                        .addComponent(btnupdate1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 62, Short.MAX_VALUE)
-                        .addComponent(btndelete1)
-                        .addGap(53, 53, 53))
+                        .addGap(185, 185, 185)
+                        .addComponent(jLabel37))
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel5Layout.createSequentialGroup()
-                                .addGap(185, 185, 185)
-                                .addComponent(jLabel37))
                             .addGroup(jPanel5Layout.createSequentialGroup()
                                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel40)
                                     .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                        .addComponent(jLabel46, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(jLabel46, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 123, Short.MAX_VALUE)
                                         .addComponent(jLabel45, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addComponent(jLabel42, javax.swing.GroupLayout.Alignment.LEADING)
                                         .addComponent(jLabel43, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addComponent(jLabel44, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addComponent(jLabel47, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel48))
+                                    .addComponent(jLabel48)
+                                    .addComponent(jLabel47, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(27, 27, 27)
                                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                        .addComponent(time, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 230, Short.MAX_VALUE)
+                                        .addComponent(location, javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(evnt_name, javax.swing.GroupLayout.Alignment.LEADING))
+                                    .addComponent(date, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(evnt_id, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(desc, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(admin_id, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(jPanel5Layout.createSequentialGroup()
-                                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                            .addComponent(admin_id, javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(desc, javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(time, javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(location, javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(evnt_name, javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(evnt_id, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 230, Short.MAX_VALUE))
-                                        .addGap(75, 75, 75)
+                                        .addGap(42, 42, 42)
                                         .addComponent(btnsearch1))
                                     .addGroup(jPanel5Layout.createSequentialGroup()
-                                        .addComponent(imglevel, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(48, 48, 48)
-                                        .addComponent(btnchoose))
-                                    .addComponent(date, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addComponent(jScrollPane11, javax.swing.GroupLayout.PREFERRED_SIZE, 678, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(110, 110, 110))
+                                        .addGap(18, 18, 18)
+                                        .addComponent(btnadd, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(jPanel5Layout.createSequentialGroup()
+                                        .addGap(18, 18, 18)
+                                        .addComponent(btnupdate1))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+                                        .addGap(18, 18, 18)
+                                        .addComponent(btndelete1, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addGroup(jPanel5Layout.createSequentialGroup()
+                                .addGap(150, 150, 150)
+                                .addComponent(imglevel, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(btnchoose)))
+                        .addGap(29, 29, 29)
+                        .addComponent(jScrollPane11, javax.swing.GroupLayout.PREFERRED_SIZE, 678, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(249, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addComponent(jScrollPane11, javax.swing.GroupLayout.PREFERRED_SIZE, 939, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(137, Short.MAX_VALUE))
+                        .addGap(64, 64, 64)
+                        .addComponent(jScrollPane11, javax.swing.GroupLayout.PREFERRED_SIZE, 939, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addComponent(jLabel37)
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addContainerGap()
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel5Layout.createSequentialGroup()
-                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(jPanel5Layout.createSequentialGroup()
-                                        .addGap(57, 57, 57)
-                                        .addComponent(jLabel40))
-                                    .addGroup(jPanel5Layout.createSequentialGroup()
-                                        .addGap(48, 48, 48)
-                                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                            .addComponent(evnt_id, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(btnsearch1))))
-                                .addGap(58, 58, 58)
-                                .addComponent(evnt_name, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(jLabel37)
+                                .addGap(59, 59, 59))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(evnt_id, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(btnsearch1)
+                                .addComponent(jLabel40)))
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel5Layout.createSequentialGroup()
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel42)))
-                        .addGap(62, 62, 62)
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(location, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel43))
-                        .addGap(56, 56, 56)
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(time, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel44))
-                        .addGap(57, 57, 57)
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel45)
-                            .addComponent(date, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel5Layout.createSequentialGroup()
-                                .addGap(48, 48, 48)
-                                .addComponent(jLabel46))
-                            .addGroup(jPanel5Layout.createSequentialGroup()
-                                .addGap(38, 38, 38)
-                                .addComponent(desc, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel5Layout.createSequentialGroup()
-                                .addGap(63, 63, 63)
-                                .addComponent(jLabel47))
-                            .addGroup(jPanel5Layout.createSequentialGroup()
-                                .addGap(54, 54, 54)
-                                .addComponent(admin_id, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel5Layout.createSequentialGroup()
-                                .addGap(56, 56, 56)
+                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(evnt_name, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel42))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(location, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel43))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(imglevel, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel48)))
+                                    .addComponent(jLabel44)
+                                    .addComponent(time, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(10, 10, 10)
+                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(date, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel45))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(desc, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel46)))
                             .addGroup(jPanel5Layout.createSequentialGroup()
-                                .addGap(95, 95, 95)
-                                .addComponent(btnchoose, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btnupdate1, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btndelete1, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnadd, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(148, 148, 148))))
+                                .addGap(17, 17, 17)
+                                .addComponent(btnadd, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnupdate1, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btndelete1, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(admin_id, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel47))
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel5Layout.createSequentialGroup()
+                                .addGap(8, 8, 8)
+                                .addComponent(jLabel48)
+                                .addGap(29, 29, 29)
+                                .addComponent(btnchoose, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel5Layout.createSequentialGroup()
+                                .addGap(18, 18, 18)
+                                .addComponent(imglevel, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                .addContainerGap(259, Short.MAX_VALUE))
         );
-
-        jScrollPane10.setViewportView(jPanel5);
 
         javax.swing.GroupLayout clzeventLayout = new javax.swing.GroupLayout(clzevent);
         clzevent.setLayout(clzeventLayout);
         clzeventLayout.setHorizontalGroup(
             clzeventLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane10, javax.swing.GroupLayout.DEFAULT_SIZE, 1312, Short.MAX_VALUE)
+            .addGroup(clzeventLayout.createSequentialGroup()
+                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 24, Short.MAX_VALUE))
         );
         clzeventLayout.setVerticalGroup(
             clzeventLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane10, javax.swing.GroupLayout.DEFAULT_SIZE, 1106, Short.MAX_VALUE)
+            .addGroup(clzeventLayout.createSequentialGroup()
+                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 201, Short.MAX_VALUE))
         );
 
         jTabbedPane2.addTab("College Events", clzevent);
 
-        jLabel49.setFont(new java.awt.Font("Baskerville Old Face", 1, 36)); // NOI18N
-        jLabel49.setText("Event Details");
+        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
 
-        jLabel50.setFont(new java.awt.Font("Baskerville Old Face", 1, 24)); // NOI18N
-        jLabel50.setText("Event Id ");
-
-        jLabel51.setFont(new java.awt.Font("Baskerville Old Face", 1, 24)); // NOI18N
+        jLabel51.setFont(new java.awt.Font("Baskerville Old Face", 1, 18)); // NOI18N
         jLabel51.setText("Event Name");
 
-        jLabel52.setFont(new java.awt.Font("Baskerville Old Face", 1, 24)); // NOI18N
+        jLabel52.setFont(new java.awt.Font("Baskerville Old Face", 1, 18)); // NOI18N
         jLabel52.setText("Location");
 
-        jLabel53.setFont(new java.awt.Font("Baskerville Old Face", 1, 24)); // NOI18N
+        jLabel53.setFont(new java.awt.Font("Baskerville Old Face", 1, 18)); // NOI18N
         jLabel53.setText("Time");
 
-        jLabel54.setFont(new java.awt.Font("Baskerville Old Face", 1, 24)); // NOI18N
+        jLabel54.setFont(new java.awt.Font("Baskerville Old Face", 1, 18)); // NOI18N
         jLabel54.setText("Event Date");
 
-        jLabel55.setFont(new java.awt.Font("Baskerville Old Face", 1, 24)); // NOI18N
+        jLabel55.setFont(new java.awt.Font("Baskerville Old Face", 1, 18)); // NOI18N
         jLabel55.setText("Description");
 
-        jLabel56.setFont(new java.awt.Font("Baskerville Old Face", 1, 24)); // NOI18N
+        jLabel56.setFont(new java.awt.Font("Baskerville Old Face", 1, 18)); // NOI18N
         jLabel56.setText("Admin Id");
 
-        jLabel57.setFont(new java.awt.Font("Baskerville Old Face", 1, 24)); // NOI18N
+        jLabel57.setFont(new java.awt.Font("Baskerville Old Face", 1, 18)); // NOI18N
         jLabel57.setText("Event Image");
-
-        evnt_id1.setFont(new java.awt.Font("Baskerville Old Face", 1, 14)); // NOI18N
-        evnt_id1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                evnt_id1ActionPerformed(evt);
-            }
-        });
 
         evnt_name1.setFont(new java.awt.Font("Baskerville Old Face", 1, 14)); // NOI18N
 
@@ -585,14 +565,6 @@ public class Admin_Events extends javax.swing.JFrame {
             }
         });
 
-        btnsearch2.setFont(new java.awt.Font("Baskerville Old Face", 1, 18)); // NOI18N
-        btnsearch2.setText("Search");
-        btnsearch2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnsearch2ActionPerformed(evt);
-            }
-        });
-
         imglevel1.setBorder(new javax.swing.border.MatteBorder(null));
 
         btnchoose1.setFont(new java.awt.Font("Baskerville Old Face", 1, 18)); // NOI18N
@@ -625,147 +597,181 @@ public class Admin_Events extends javax.swing.JFrame {
         });
         jScrollPane12.setViewportView(Table2);
 
+        evnt_id1.setFont(new java.awt.Font("Baskerville Old Face", 1, 14)); // NOI18N
+        evnt_id1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                evnt_id1ActionPerformed(evt);
+            }
+        });
+
+        jLabel50.setFont(new java.awt.Font("Baskerville Old Face", 1, 18)); // NOI18N
+        jLabel50.setText("Event Id ");
+
+        btnsearch2.setFont(new java.awt.Font("Baskerville Old Face", 1, 18)); // NOI18N
+        btnsearch2.setText("Search");
+        btnsearch2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnsearch2ActionPerformed(evt);
+            }
+        });
+
+        jLabel49.setFont(new java.awt.Font("Baskerville Old Face", 1, 24)); // NOI18N
+        jLabel49.setText("Event Details");
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(20, 20, 20)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(71, 71, 71)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
+                                .addComponent(jLabel54, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jXDatePicker1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel50)
+                                    .addComponent(jLabel51)
+                                    .addComponent(jLabel52, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel53, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(30, 30, 30)
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(time1, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(location1, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(evnt_name1, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(evnt_id1, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE))))
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel50)
-                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(jLabel55, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jLabel54, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jLabel51, javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jLabel52, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jLabel53, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jLabel56, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel57))
-                        .addGap(27, 27, 27)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGap(27, 27, 27)
-                                .addComponent(jLabel49))
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                    .addComponent(admin_id1, javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(desc1, javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(time1, javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(location1, javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(evnt_name1, javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(evnt_id1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 33, Short.MAX_VALUE)
-                                .addComponent(btnsearch2))
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(imglevel1, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(48, 48, 48)
-                                .addComponent(btnchoose1)))
-                        .addGap(18, 18, 18))
+                                .addGap(50, 50, 50)
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(btnadd1, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(btnupdate2)
+                                    .addComponent(btndelete2, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnsearch2)
+                                .addGap(30, 30, 30))))
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(51, 51, 51)
-                        .addComponent(btnadd1, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(53, 53, 53)
-                        .addComponent(btnupdate2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btndelete2)
-                        .addGap(30, 30, 30)))
+                        .addComponent(jLabel57)
+                        .addGap(36, 36, 36)
+                        .addComponent(imglevel1, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnchoose1))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel55, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel56, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(admin_id1, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(desc1, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 46, Short.MAX_VALUE)
                 .addComponent(jScrollPane12, javax.swing.GroupLayout.PREFERRED_SIZE, 678, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(786, 786, 786))
+                .addGap(113, 113, 113))
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(200, 200, 200)
+                .addComponent(jLabel49)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel49)
+                .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addContainerGap(61, Short.MAX_VALUE)
-                        .addComponent(jScrollPane12, javax.swing.GroupLayout.PREFERRED_SIZE, 939, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(34, 34, 34)
-                        .addComponent(jLabel49)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(jPanel2Layout.createSequentialGroup()
-                                        .addGap(57, 57, 57)
-                                        .addComponent(jLabel50))
-                                    .addGroup(jPanel2Layout.createSequentialGroup()
-                                        .addGap(48, 48, 48)
-                                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                            .addComponent(evnt_id1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(btnsearch2))))
-                                .addGap(58, 58, 58)
-                                .addComponent(evnt_name1, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel51)))
-                        .addGap(62, 62, 62)
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(evnt_id1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel50))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jLabel51)
+                                .addGap(7, 7, 7))
+                            .addComponent(evnt_name1, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(37, 37, 37))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(btnsearch2)
+                        .addGap(18, 18, 18)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(location1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel52))
-                        .addGap(56, 56, 56)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(time1, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel53))
-                        .addGap(57, 57, 57)
-                        .addComponent(jLabel54)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGap(59, 59, 59)
-                                .addComponent(jLabel55))
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGap(49, 49, 49)
-                                .addComponent(desc1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGap(63, 63, 63)
-                                .addComponent(jLabel56))
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGap(54, 54, 54)
-                                .addComponent(admin_id1, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGap(56, 56, 56)
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(imglevel1, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel57)))
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGap(95, 95, 95)
-                                .addComponent(btnchoose1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btnupdate2, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btndelete2, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel52)
                             .addComponent(btnadd1, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addGap(104, 104, 104))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(jLabel53)
+                                .addGap(24, 24, 24)
+                                .addComponent(jLabel54))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(time1, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jXDatePicker1, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(desc1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel55))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(admin_id1, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel56)))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(btnupdate2, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(17, 17, 17)
+                        .addComponent(btndelete2, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel57)
+                            .addComponent(imglevel1, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(60, 60, 60)
+                        .addComponent(btnchoose1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(796, 796, 796))
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(36, 36, 36)
+                .addComponent(jScrollPane12, javax.swing.GroupLayout.PREFERRED_SIZE, 939, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
-
-        jScrollPane4.setViewportView(jPanel2);
 
         javax.swing.GroupLayout cmteventLayout = new javax.swing.GroupLayout(cmtevent);
         cmtevent.setLayout(cmteventLayout);
         cmteventLayout.setHorizontalGroup(
             cmteventLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 1312, Short.MAX_VALUE)
+            .addGroup(cmteventLayout.createSequentialGroup()
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 127, Short.MAX_VALUE))
         );
         cmteventLayout.setVerticalGroup(
             cmteventLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane4)
+            .addGroup(cmteventLayout.createSequentialGroup()
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 187, Short.MAX_VALUE))
         );
 
         jTabbedPane2.addTab("Community Events", cmtevent);
+
+        jScrollPane4.setViewportView(jTabbedPane2);
 
         javax.swing.GroupLayout EventstabLayout = new javax.swing.GroupLayout(Eventstab);
         Eventstab.setLayout(EventstabLayout);
         EventstabLayout.setHorizontalGroup(
             EventstabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane2)
+            .addGroup(EventstabLayout.createSequentialGroup()
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 1566, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         EventstabLayout.setVerticalGroup(
             EventstabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(EventstabLayout.createSequentialGroup()
-                .addComponent(jTabbedPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 1135, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 1390, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
         );
 
@@ -795,7 +801,7 @@ public class Admin_Events extends javax.swing.JFrame {
                     .addComponent(jLabel4)
                     .addComponent(jLabel17)
                     .addComponent(jLabel36))
-                .addContainerGap(688, Short.MAX_VALUE))
+                .addContainerGap(704, Short.MAX_VALUE))
         );
         HelptabLayout.setVerticalGroup(
             HelptabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -806,7 +812,7 @@ public class Admin_Events extends javax.swing.JFrame {
                 .addComponent(jLabel17)
                 .addGap(140, 140, 140)
                 .addComponent(jLabel36)
-                .addContainerGap(938, Short.MAX_VALUE))
+                .addContainerGap(1074, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Help", Helptab);
@@ -830,14 +836,6 @@ public class Admin_Events extends javax.swing.JFrame {
         });
 
         email.setFont(new java.awt.Font("Baskerville Old Face", 1, 14)); // NOI18N
-
-        btndelete.setFont(new java.awt.Font("Baskerville Old Face", 1, 18)); // NOI18N
-        btndelete.setText("Delete");
-        btndelete.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btndeleteActionPerformed(evt);
-            }
-        });
 
         btnupdate.setFont(new java.awt.Font("Baskerville Old Face", 1, 18)); // NOI18N
         btnupdate.setText("Update");
@@ -885,17 +883,16 @@ public class Admin_Events extends javax.swing.JFrame {
                             .addComponent(jLabel41, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(42, 42, 42)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addComponent(btndelete)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 58, Short.MAX_VALUE)
-                                .addComponent(btnupdate))
                             .addComponent(email, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 234, Short.MAX_VALUE)
-                            .addComponent(std_id, javax.swing.GroupLayout.Alignment.LEADING))
+                            .addComponent(std_id, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addComponent(btnupdate)
+                                .addGap(60, 60, 60)))
                         .addGap(49, 49, 49)
                         .addComponent(btnsrch, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 727, Short.MAX_VALUE)
-                .addContainerGap())
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 574, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(870, 870, 870))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -915,14 +912,12 @@ public class Admin_Events extends javax.swing.JFrame {
                             .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                 .addComponent(jLabel41)
                                 .addComponent(email, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(50, 50, 50)
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btnupdate, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btndelete, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(40, 40, 40)
+                        .addComponent(btnupdate, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGap(82, 82, 82)
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 415, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(829, Short.MAX_VALUE))
+                .addContainerGap(965, Short.MAX_VALUE))
         );
 
         jScrollPane1.setViewportView(jPanel3);
@@ -931,7 +926,7 @@ public class Admin_Events extends javax.swing.JFrame {
         Userstab.setLayout(UserstabLayout);
         UserstabLayout.setHorizontalGroup(
             UserstabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 1317, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 1333, Short.MAX_VALUE)
         );
         UserstabLayout.setVerticalGroup(
             UserstabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -946,11 +941,11 @@ public class Admin_Events extends javax.swing.JFrame {
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1317, Short.MAX_VALUE)
+            .addGap(0, 1333, Short.MAX_VALUE)
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1345, Short.MAX_VALUE)
+            .addGap(0, 1481, Short.MAX_VALUE)
         );
 
         jTabbedPane1.addTab("Bookings", jPanel4);
@@ -975,14 +970,13 @@ public class Admin_Events extends javax.swing.JFrame {
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(18, 18, 18)
-                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 18, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(55, 55, 55))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 8, Short.MAX_VALUE))
         );
 
         jLabel3.setFont(new java.awt.Font("Baskerville Old Face", 1, 24)); // NOI18N
@@ -1000,14 +994,15 @@ public class Admin_Events extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1)
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1338, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel3)
-                        .addGap(5, 5, 5)
-                        .addComponent(btnlogout))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnlogout)
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -1015,13 +1010,17 @@ public class Admin_Events extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnlogout))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1378, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(3822, 3822, 3822))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1514, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(3742, 3742, 3742))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnlogout))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
 
         pack();
@@ -1031,23 +1030,127 @@ public class Admin_Events extends javax.swing.JFrame {
         
     }//GEN-LAST:event_btnlogoutActionPerformed
 
-    private void btnchangeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnchangeActionPerformed
+    public void show_event()
+{
+    
+    try{
         
-    }//GEN-LAST:event_btnchangeActionPerformed
-
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField1ActionPerformed
-
+            Class.forName("oracle.jdbc.driver.OracleDriver");
+            con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:orcl", "system", "123456");
+            stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT EVENT_NO,EVENT_ID FROM TOP_EVENTS WHERE EVENT_NO='1' ");
+            if (rs.next())
+             {
+                 String event_id= rs.getString("EVENT_ID");
+                 ResultSet rs1=stmt.executeQuery("SELECT * FROM EVENT WHERE EVENT_ID='"+event_id+"'");
+                 if (rs1.next()){
+                 
+                 byte[] imgData = null;
+                 Blob img  = rs1.getBlob("EVENT_IMAGE");
+                 imgData = img.getBytes(1,(int)img.length());
+   BufferedImage image = ImageIO.read(new ByteArrayInputStream(imgData));
+   event1.setBounds(100,100,400,500);
+   event1.setIcon(new ImageIcon(image.getScaledInstance(175,208,Image.SCALE_SMOOTH)));
+   event_name1.setText(rs1.getString("EVENT_NAME"));
+                //event1.setIcon();
+                
+                 }
+            }
+            
+            ResultSet rs2 = stmt.executeQuery("SELECT EVENT_NO,EVENT_ID FROM TOP_EVENTS WHERE EVENT_NO='2' ");
+            if (rs2.next())
+             {
+                 String event_id= rs2.getString("EVENT_ID");
+                 ResultSet rs12=stmt.executeQuery("SELECT * FROM EVENT WHERE EVENT_ID='"+event_id+"'");
+                 if (rs12.next()){
+                 
+                 byte[] imgData = null;
+                 Blob img  = rs12.getBlob("EVENT_IMAGE");
+                 imgData = img.getBytes(1,(int)img.length());
+                 BufferedImage image = ImageIO.read(new ByteArrayInputStream(imgData));
+                 event2.setBounds(100,100,400,500);
+                 event2.setIcon(new ImageIcon(image.getScaledInstance(175,208,Image.SCALE_SMOOTH)));
+                 event_name2.setText(rs12.getString("EVENT_NAME"));
+                //event1.setIcon();
+                
+                 }
+            }
+            
+           ResultSet rs3 = stmt.executeQuery("SELECT EVENT_NO,EVENT_ID FROM TOP_EVENTS WHERE EVENT_NO='3' ");
+            if (rs3.next())
+             {
+                 String event_id= rs3.getString("EVENT_ID");
+                 ResultSet rs13=stmt.executeQuery("SELECT * FROM EVENT WHERE EVENT_ID='"+event_id+"'");
+                 if (rs13.next()){
+                 
+                 byte[] imgData = null;
+                 Blob img  = rs13.getBlob("EVENT_IMAGE");
+                 imgData = img.getBytes(1,(int)img.length());
+                 BufferedImage image = ImageIO.read(new ByteArrayInputStream(imgData));
+                 event3.setBounds(100,100,400,500);
+                 event3.setIcon(new ImageIcon(image.getScaledInstance(175,208,Image.SCALE_SMOOTH)));
+                 event_name3.setText(rs13.getString("EVENT_NAME"));
+                //event1.setIcon();
+                
+                 }
+            }
+            
+            ResultSet rs4 = stmt.executeQuery("SELECT EVENT_NO,EVENT_ID FROM TOP_EVENTS WHERE EVENT_NO='4' ");
+            if (rs4.next())
+             {
+                 String event_id= rs4.getString("EVENT_ID");
+                 ResultSet rs14=stmt.executeQuery("SELECT * FROM EVENT WHERE EVENT_ID='"+event_id+"'");
+                 if (rs14.next()){
+                 
+                 byte[] imgData = null;
+                 Blob img  = rs14.getBlob("EVENT_IMAGE");
+                 imgData = img.getBytes(1,(int)img.length());
+                 BufferedImage image = ImageIO.read(new ByteArrayInputStream(imgData));
+                 event4.setBounds(100,100,400,500);
+                 event4.setIcon(new ImageIcon(image.getScaledInstance(175,208,Image.SCALE_SMOOTH)));
+                 event_name4.setText(rs14.getString("EVENT_NAME"));
+                //event1.setIcon();
+                
+                 }
+            }
+            ResultSet rs5 = stmt.executeQuery("SELECT EVENT_NO,EVENT_ID FROM TOP_EVENTS WHERE EVENT_NO='5' ");
+            if (rs5.next())
+             {
+                 String event_id= rs5.getString("EVENT_ID");
+                 ResultSet rs15=stmt.executeQuery("SELECT * FROM EVENT WHERE EVENT_ID='"+event_id+"'");
+                 if (rs15.next()){
+                 
+                 byte[] imgData = null;
+                 Blob img  = rs15.getBlob("EVENT_IMAGE");
+                 imgData = img.getBytes(1,(int)img.length());
+                 BufferedImage image = ImageIO.read(new ByteArrayInputStream(imgData));
+                 event5.setBounds(100,100,400,500);
+                 event5.setIcon(new ImageIcon(image.getScaledInstance(175,208,Image.SCALE_SMOOTH)));
+                 event_name5.setText(rs15.getString("EVENT_NAME"));
+                //event1.setIcon();
+                
+             
+            }}
+            
+            
+            }
+        catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "ERROR");
+        }
+}
+    
+    
+    
     private void btnsrchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnsrchActionPerformed
          try{
             Class.forName("oracle.jdbc.driver.OracleDriver");
-            con1=DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:kiosk","SYSTEM","1234Kamu");
+            con1=DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:orcl","system","123456");
             st1= con1.createStatement();
             String sid=std_id.getText();
             System.out.println(sid);
            //  ps1.setString(1, std_id.getText());
-            rs = st1.executeQuery("SELECT * FROM TEST1 WHERE STUDENT_ID='"+sid+"'");
+            rs = st1.executeQuery("SELECT * FROM REGISTER WHERE STUDENT_NO='"+sid+"'");
             if (rs.next()){
             email.setText(rs.getString("EMAIL"));
         }
@@ -1058,37 +1161,14 @@ public class Admin_Events extends javax.swing.JFrame {
     }
     }//GEN-LAST:event_btnsrchActionPerformed
 
-    private void btndeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btndeleteActionPerformed
-        try{
-            Class.forName("oracle.jdbc.driver.OracleDriver");
-            con1=DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:kiosk","SYSTEM","1234Kamu");
-            st1= con1.createStatement();
-            String email1= email.getText();
-            String std1=std_id.getText();
-            String sql="DELETE FROM TEST1 WHERE STUDENT_ID='"+std1+"'";
-            ps1=con1.prepareStatement(sql);
-            rs=ps1.executeQuery();
-            JOptionPane.showMessageDialog(null,"Deleted Successfully");
-            showTableData();
-            std_id.setText(" ");
-            email.setText(" ");
-            rs.close();
-            con1.close();
-        }
-        catch(Exception ex){
-            JOptionPane.showMessageDialog(null,ex);
-        
-    }
-    }//GEN-LAST:event_btndeleteActionPerformed
-
     private void btnupdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnupdateActionPerformed
         String email1= email.getText();
         String std1=std_id.getText();
         try{
          Class.forName("oracle.jdbc.driver.OracleDriver");
-        con1=DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:kiosk","SYSTEM","1234Kamu");
+        con1=DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:orcl","system","123456");
         st1= con1.createStatement();
-        String sql="UPDATE TEST1 SET EMAIL='"+email1+"' where STUDENT_ID='"+std1+"'";
+        String sql="UPDATE REGISTER SET STUDENT_EMAIL='"+email1+"' where STUDENT_NO='"+std1+"'";
         ps1=con1.prepareStatement(sql);
         rs=ps1.executeQuery();
         JOptionPane.showMessageDialog(null,"Updated Successfully");
@@ -1107,135 +1187,6 @@ public class Admin_Events extends javax.swing.JFrame {
     private void std_idActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_std_idActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_std_idActionPerformed
-
-    private void evnt_idActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_evnt_idActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_evnt_idActionPerformed
-
-    private void timeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_timeActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_timeActionPerformed
-
-    private void btnupdate1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnupdate1ActionPerformed
-        String eid=evnt_id.getText();
-        String ename=evnt_name.getText();
-        String elocation=location.getText();
-        String etime=time.getText();
-        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        date.setFormats(dateFormat);
-        String date_to_store = dateFormat.format(date.getDate()).toString();
-        String edescrip=desc.getText();
-        String eadmin=admin_id.getText();
-        String dateFormatted = "TO_DATE('"+date_to_store+"', 'DD-MM-YYYY')";
-        
-        try{
-            Class.forName("oracle.jdbc.driver.OracleDriver");
-            con1=DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:kiosk","SYSTEM","1234Kamu");
-            st1= con1.createStatement();
-            
-            
-            String sql="UPDATE COLLEGEEVENT SET EVENT_NAME='"+ename+"',LOCATION='"+elocation+"',TIME='"+etime+"',EVENT_DATE="+"TO_DATE('"+date_to_store+"', 'DD-MM-YYYY'),DESCRIPTION='"+edescrip+"',ADMINID='"+eadmin+"',EVENT_IMAGE=? WHERE EVENT_ID='"+eid+"'";
-            ps1=con1.prepareStatement(sql);
-            imageInputStream = new FileInputStream(new File(path));
-            ps1.setBinaryStream(1, imageInputStream);
-            rs=ps1.executeQuery();
-            JOptionPane.showMessageDialog(null,"Updated Successfully");
-            showTableData1();
-            rs.close();
-            con1.close();
-             
-		    
-                    // execute query
-		    
-    }
-    catch(Exception ex){
-            JOptionPane.showMessageDialog(null,ex);
-        
-    }
-    }//GEN-LAST:event_btnupdate1ActionPerformed
-
-    private void btnsearch1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnsearch1ActionPerformed
-        String eid=evnt_id.getText();
-        String ename=evnt_name.getText();
-        String elocation=location.getText();
-        String etime=time.getText();
-        String edescrip=desc.getText();
-        String eadmin=admin_id.getText();
-        
-        try{
-            Class.forName("oracle.jdbc.driver.OracleDriver");
-            con1=DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:kiosk","SYSTEM","1234Kamu");
-            st1= con1.createStatement();
-            System.out.println(eid);
-           //  ps1.setString(1, std_id.getText());
-            rs = st1.executeQuery("SELECT * FROM COLLEGEEVENT WHERE EVENT_ID='"+eid+"'");
-            if (rs.next()){
-            evnt_name.setText(rs.getString("EVENT_NAME"));
-            location.setText(rs.getString("LOCATION"));
-            time.setText(rs.getString("TIME"));
-            desc.setText(rs.getString("DESCRIPTION"));
-            admin_id.setText(rs.getString("ADMINID"));
-            byte[] imgData = null;
-                 Blob img  = rs.getBlob("EVENT_IMAGE");
-                 imgData = img.getBytes(1,(int)img.length());
-   BufferedImage image = ImageIO.read(new ByteArrayInputStream(imgData));
-    imglevel.setIcon(new ImageIcon(image.getScaledInstance(imglevel.getWidth(),imglevel.getHeight(),Image.SCALE_SMOOTH)));
-            
-        }
-         }
-        catch(Exception ex){
-        JOptionPane.showMessageDialog(null,ex);
-        
-    }
-    }//GEN-LAST:event_btnsearch1ActionPerformed
-
-    private void btndelete1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btndelete1ActionPerformed
-        String eid=evnt_id.getText();
-        String ename=evnt_name.getText();
-        String elocation=location.getText();
-        String etime=time.getText();
-        String edescrip=desc.getText();
-        String eadmin=admin_id.getText();
-       
-        try{
-            Class.forName("oracle.jdbc.driver.OracleDriver");
-            con1=DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:kiosk","SYSTEM","1234Kamu");
-            st1= con1.createStatement();
-            String sql="DELETE FROM COLLEGEEVENT WHERE EVENT_ID='"+eid+"'";
-            ps1=con1.prepareStatement(sql);
-            rs=ps1.executeQuery();
-            JOptionPane.showMessageDialog(null,"Deleted Successfully");
-            showTableData1();
-            evnt_id.setText(" ");
-            evnt_name.setText(" ");
-            location.setText(" ");
-            time.setText(" ");
-            desc.setText(" ");
-            admin_id.setText(" ");
-            
-            rs.close();
-            con1.close();
-        }
-        catch(Exception ex){
-        JOptionPane.showMessageDialog(null,ex);
-        
-    }
-    }//GEN-LAST:event_btndelete1ActionPerformed
-
-    private void btnchooseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnchooseActionPerformed
-            JFileChooser file = new JFileChooser();
-            file.setCurrentDirectory(new File(System.getProperty("user.home")));
-          //filter the files
-            FileNameExtensionFilter filter = new FileNameExtensionFilter("*.Images", "jpg","gif","png");
-            file.addChoosableFileFilter(filter);
-            int result = file.showSaveDialog(null);
-           //if the user click on save in Jfilechooser
-            if(result == JFileChooser.APPROVE_OPTION){
-              File selectedFile = file.getSelectedFile();
-              String path = selectedFile.getAbsolutePath();
-              imglevel.setIcon(ResizeImage(path));
-          }        // TODO add your handling code here:
-    }//GEN-LAST:event_btnchooseActionPerformed
 
     private void evnt_id1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_evnt_id1ActionPerformed
         // TODO add your handling code here:
@@ -1259,11 +1210,11 @@ public class Admin_Events extends javax.swing.JFrame {
         
         try{
             Class.forName("oracle.jdbc.driver.OracleDriver");
-            con1=DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:kiosk","SYSTEM","1234Kamu");
+            con1=DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:orcl","system","123456");
             st1= con1.createStatement();
             
             
-            String sql="UPDATE COMMUNITYEVENT SET EVENT_NAME='"+ename1+"',LOCATION='"+elocation1+"',TIME='"+etime1+"',EVENT_DATE="+"TO_DATE('"+date_to_store+"', 'DD-MM-YYYY'),DESCRIPTION='"+edescrip1+"',ADMINID='"+eadmin1+"',EVENT_IMAGE=? WHERE EVENT_ID='"+eid1+"'";
+            String sql="UPDATE COMMUNITY_EVENTS SET EVENT_NAME='"+ename1+"',LOCATION='"+elocation1+"',TIME='"+etime1+"',EVENT_DATE="+"TO_DATE('"+date_to_store+"', 'DD-MM-YYYY'),DESCRIPTION='"+edescrip1+"',ADMIN_ID='"+eadmin1+"',EVENT_IMAGE=? WHERE EVENT_ID='"+eid1+"'";
             ps1=con1.prepareStatement(sql);
             imageInputStream = new FileInputStream(new File(path));
             ps1.setBinaryStream(1, imageInputStream);
@@ -1293,9 +1244,9 @@ public class Admin_Events extends javax.swing.JFrame {
        
         try{
             Class.forName("oracle.jdbc.driver.OracleDriver");
-            con1=DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:kiosk","SYSTEM","1234Kamu");
+            con1=DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:orcl","system","123456");
             st1= con1.createStatement();
-            String sql="DELETE FROM COMMUNITYEVENT WHERE EVENT_ID='"+eid1+"'";
+            String sql="DELETE FROM COMMUNITY_EVENTS WHERE EVENT_ID='"+eid1+"'";
             ps1=con1.prepareStatement(sql);
             rs=ps1.executeQuery();
             JOptionPane.showMessageDialog(null,"Deleted Successfully");
@@ -1326,11 +1277,11 @@ public class Admin_Events extends javax.swing.JFrame {
         
         try{
             Class.forName("oracle.jdbc.driver.OracleDriver");
-            con1=DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:kiosk","SYSTEM","1234Kamu");
+            con1=DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:orcl","system","123456");
             st1= con1.createStatement();
             System.out.println(eid1);
            //  ps1.setString(1, std_id.getText());
-            rs = st1.executeQuery("SELECT * FROM COMMUNITYEVENT WHERE EVENT_ID='"+eid1+"'");
+            rs = st1.executeQuery("SELECT * FROM COMMUNITY_EVENTS WHERE EVENT_ID='"+eid1+"'");
             if (rs.next()){
             evnt_name.setText(rs.getString("EVENT_NAME"));
             location.setText(rs.getString("LOCATION"));
@@ -1366,6 +1317,236 @@ public class Admin_Events extends javax.swing.JFrame {
           }      
     }//GEN-LAST:event_btnchoose1ActionPerformed
 
+    private void btnchooseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnchooseActionPerformed
+        JFileChooser file = new JFileChooser();
+        file.setCurrentDirectory(new File(System.getProperty("user.home")));
+        //filter the files
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("*.Images", "jpg","gif","png");
+        file.addChoosableFileFilter(filter);
+        int result = file.showSaveDialog(null);
+        //if the user click on save in Jfilechooser
+        if(result == JFileChooser.APPROVE_OPTION){
+            File selectedFile = file.getSelectedFile();
+            String path = selectedFile.getAbsolutePath();
+            imglevel.setIcon(ResizeImage(path));
+        }        // TODO add your handling code here:
+    }//GEN-LAST:event_btnchooseActionPerformed
+
+    private void btnsearch1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnsearch1ActionPerformed
+        String eid=evnt_id.getText();
+        String ename=evnt_name.getText();
+        String elocation=location.getText();
+        String etime=time.getText();
+        String edescrip=desc.getText();
+        String eadmin=admin_id.getText();
+
+        try{
+            Class.forName("oracle.jdbc.driver.OracleDriver");
+            con1=DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:orcl","system","123456");
+            st1= con1.createStatement();
+            System.out.println(eid);
+            //  ps1.setString(1, std_id.getText());
+            rs = st1.executeQuery("SELECT * FROM EVENT WHERE EVENT_ID='"+eid+"'");
+            if (rs.next()){
+                evnt_name.setText(rs.getString("EVENT_NAME"));
+                location.setText(rs.getString("LOCATION"));
+                time.setText(rs.getString("TIME"));
+                desc.setText(rs.getString("DESCRIPTION"));
+                admin_id.setText(rs.getString("ADMIN_ID"));
+                byte[] imgData = null;
+                Blob img  = rs.getBlob("EVENT_IMAGE");
+                imgData = img.getBytes(1,(int)img.length());
+                BufferedImage image = ImageIO.read(new ByteArrayInputStream(imgData));
+                imglevel.setIcon(new ImageIcon(image.getScaledInstance(imglevel.getWidth(),imglevel.getHeight(),Image.SCALE_SMOOTH)));
+
+            }
+        }
+        catch(Exception ex){
+            JOptionPane.showMessageDialog(null,ex);
+
+        }
+    }//GEN-LAST:event_btnsearch1ActionPerformed
+
+    private void btndelete1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btndelete1ActionPerformed
+        String eid=evnt_id.getText();
+        String ename=evnt_name.getText();
+        String elocation=location.getText();
+        String etime=time.getText();
+        String edescrip=desc.getText();
+        String eadmin=admin_id.getText();
+
+        try{
+            Class.forName("oracle.jdbc.driver.OracleDriver");
+            con1=DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:orcl","system","123456");
+            st1= con1.createStatement();
+            String sql="DELETE FROM EVENT WHERE EVENT_ID='"+eid+"'";
+            ps1=con1.prepareStatement(sql);
+            rs=ps1.executeQuery();
+            JOptionPane.showMessageDialog(null,"Deleted Successfully");
+            showTableData1();
+            evnt_id.setText(" ");
+            evnt_name.setText(" ");
+            location.setText(" ");
+            time.setText(" ");
+            desc.setText(" ");
+            admin_id.setText(" ");
+
+            rs.close();
+            con1.close();
+        }
+        catch(Exception ex){
+            JOptionPane.showMessageDialog(null,ex);
+
+        }
+    }//GEN-LAST:event_btndelete1ActionPerformed
+
+    private void btnupdate1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnupdate1ActionPerformed
+        String eid=evnt_id.getText();
+        String ename=evnt_name.getText();
+        String elocation=location.getText();
+        String etime=time.getText();
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        date.setFormats(dateFormat);
+        String date_to_store = dateFormat.format(date.getDate()).toString();
+        String edescrip=desc.getText();
+        String eadmin=admin_id.getText();
+        String dateFormatted = "TO_DATE('"+date_to_store+"', 'DD-MM-YYYY')";
+
+        try{
+            Class.forName("oracle.jdbc.driver.OracleDriver");
+            con1=DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:orcl","system","123456");
+            st1= con1.createStatement();
+
+            String sql="UPDATE EVENT SET EVENT_NAME='"+ename+"',LOCATION='"+elocation+"',TIME='"+etime+"',EVENT_DATE="+"TO_DATE('"+date_to_store+"', 'DD-MM-YYYY'),DESCRIPTION='"+edescrip+"',ADMIN_ID='"+eadmin+"',EVENT_IMAGE=? WHERE EVENT_ID='"+eid+"'";
+            ps1=con1.prepareStatement(sql);
+            imageInputStream = new FileInputStream(new File(path));
+            ps1.setBinaryStream(1, imageInputStream);
+            rs=ps1.executeQuery();
+            JOptionPane.showMessageDialog(null,"Updated Successfully");
+            showTableData1();
+            rs.close();
+            con1.close();
+
+            // execute query
+
+        }
+        catch(Exception ex){
+            JOptionPane.showMessageDialog(null,ex);
+
+        }
+    }//GEN-LAST:event_btnupdate1ActionPerformed
+
+    private void timeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_timeActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_timeActionPerformed
+
+    private void evnt_idActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_evnt_idActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_evnt_idActionPerformed
+
+    private void event5detailsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_event5detailsActionPerformed
+        try{
+
+            Class.forName("oracle.jdbc.driver.OracleDriver");
+            con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:orcl", "system", "123456");
+            stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT EVENT_NO,EVENT_ID FROM TOP_EVENTS WHERE EVENT_NO='5' ");
+            if (rs.next()){
+                event_no=rs.getString("EVENT_ID");
+                Seedetails sde=new Seedetails();
+                sde.setVisible(true);
+            }
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }         // TODO add your handling code here:
+    }//GEN-LAST:event_event5detailsActionPerformed
+
+    private void event1detailsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_event1detailsActionPerformed
+    
+  try{
+
+            Class.forName("oracle.jdbc.driver.OracleDriver");
+            con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:orcl", "system", "123456");
+            stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT EVENT_NO,EVENT_ID FROM TOP_EVENTS WHERE EVENT_NO='1' ");
+            if (rs.next()){
+                event_no=rs.getString("EVENT_ID");
+                Seedetails sde=new Seedetails();
+                sde.setVisible(true);
+            }
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }       
+// TODO add your handling code here:
+    }//GEN-LAST:event_event1detailsActionPerformed
+
+    private void event2detailsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_event2detailsActionPerformed
+       
+ try{
+
+            Class.forName("oracle.jdbc.driver.OracleDriver");
+            con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:orcl", "system", "123456");
+            stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT EVENT_NO,EVENT_ID FROM TOP_EVENTS WHERE EVENT_NO='2' ");
+            if (rs.next()){
+                event_no=rs.getString("EVENT_ID");
+                Seedetails sde=new Seedetails();
+                sde.setVisible(true);
+            }
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }        
+// TODO add your handling code here:
+    }//GEN-LAST:event_event2detailsActionPerformed
+
+    private void event3detailsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_event3detailsActionPerformed
+      
+try{
+
+            Class.forName("oracle.jdbc.driver.OracleDriver");
+            con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:orcl", "system", "123456");
+            stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT EVENT_NO,EVENT_ID FROM TOP_EVENTS WHERE EVENT_NO='3' ");
+            if (rs.next()){
+                event_no=rs.getString("EVENT_ID");
+                Seedetails sde=new Seedetails();
+                sde.setVisible(true);
+            }
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }         
+// TODO add your handling code here:
+    }//GEN-LAST:event_event3detailsActionPerformed
+
+    private void event4detailsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_event4detailsActionPerformed
+   
+        try{
+
+            Class.forName("oracle.jdbc.driver.OracleDriver");
+            con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:orcl", "system", "123456");
+            stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT EVENT_NO,EVENT_ID FROM TOP_EVENTS WHERE EVENT_NO='4' ");
+            if (rs.next()){
+                event_no=rs.getString("EVENT_ID");
+                Seedetails sde=new Seedetails();
+                sde.setVisible(true);
+            }
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        } 
+        // TODO add your handling code here:
+    }//GEN-LAST:event_event4detailsActionPerformed
+
       public ImageIcon ResizeImage(String ImagePath)
     {
         ImageIcon MyImage = new ImageIcon(ImagePath);
@@ -1378,10 +1559,10 @@ public class Admin_Events extends javax.swing.JFrame {
    public void showTableData(){
        try{
         Class.forName("oracle.jdbc.driver.OracleDriver");
-        con1=DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:kiosk","system","1234Kamu");
+        con1=DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:orcl","system","123456");
         st1= con1.createStatement();
       
-        rs = st1.executeQuery("select * from TEST1");
+        rs = st1.executeQuery("select * from REGISTER");
         System.out.print("running");
         Table.setModel(DbUtils.resultSetToTableModel(rs));
       }
@@ -1394,10 +1575,10 @@ public class Admin_Events extends javax.swing.JFrame {
    {
        try{
         Class.forName("oracle.jdbc.driver.OracleDriver");
-        con1=DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:kiosk","system","1234Kamu");
+        con1=DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:orcl","system","123456");
         st1= con1.createStatement();
       
-        rs = st1.executeQuery("select * from COLLEGEEVENT");
+        rs = st1.executeQuery("select * from EVENT");
         System.out.print("running");
         Table1.setModel(DbUtils.resultSetToTableModel(rs));
       }
@@ -1410,10 +1591,10 @@ public class Admin_Events extends javax.swing.JFrame {
    {
        try{
         Class.forName("oracle.jdbc.driver.OracleDriver");
-        con1=DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:kiosk","system","1234Kamu");
+        con1=DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:orcl","system","123456");
         st1= con1.createStatement();
       
-        rs = st1.executeQuery("select * from COMMUNITYEVENT");
+        rs = st1.executeQuery("select * from COMMUNITY_EVENTS");
         System.out.print("running");
         Table2.setModel(DbUtils.resultSetToTableModel(rs));
       }
@@ -1467,20 +1648,13 @@ public class Admin_Events extends javax.swing.JFrame {
     private javax.swing.JTextField admin_id1;
     private javax.swing.JButton btnadd;
     private javax.swing.JButton btnadd1;
-    private javax.swing.JButton btnchange;
     private javax.swing.JButton btnchoose;
     private javax.swing.JButton btnchoose1;
-    private javax.swing.JButton btndelete;
     private javax.swing.JButton btndelete1;
     private javax.swing.JButton btndelete2;
     private javax.swing.JButton btnlogout;
     private javax.swing.JButton btnsearch1;
     private javax.swing.JButton btnsearch2;
-    private javax.swing.JButton btnsee1;
-    private javax.swing.JButton btnsee2;
-    private javax.swing.JButton btnsee3;
-    private javax.swing.JButton btnsee4;
-    private javax.swing.JButton btnsee5;
     private javax.swing.JButton btnsrch;
     private javax.swing.JButton btnupdate;
     private javax.swing.JButton btnupdate1;
@@ -1491,23 +1665,29 @@ public class Admin_Events extends javax.swing.JFrame {
     private javax.swing.JTextField desc;
     private javax.swing.JTextField desc1;
     private javax.swing.JTextField email;
+    private javax.swing.JLabel event1;
+    private javax.swing.JButton event1details;
+    private javax.swing.JLabel event2;
+    private javax.swing.JButton event2details;
+    private javax.swing.JLabel event3;
+    private javax.swing.JButton event3details;
+    private javax.swing.JLabel event4;
+    private javax.swing.JButton event4details;
+    private javax.swing.JLabel event5;
+    private javax.swing.JButton event5details;
+    private javax.swing.JLabel event_name1;
+    private javax.swing.JLabel event_name2;
+    private javax.swing.JLabel event_name3;
+    private javax.swing.JLabel event_name4;
+    private javax.swing.JLabel event_name5;
     private javax.swing.JTextField evnt_id;
     private javax.swing.JTextField evnt_id1;
     private javax.swing.JTextField evnt_name;
     private javax.swing.JTextField evnt_name1;
-    private javax.swing.JLabel home1;
-    private javax.swing.JLabel home2;
-    private javax.swing.JLabel home3;
-    private javax.swing.JLabel home4;
-    private javax.swing.JLabel home5;
     private javax.swing.JLabel imglevel;
     private javax.swing.JLabel imglevel1;
-    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel11;
-    private javax.swing.JLabel jLabel13;
-    private javax.swing.JLabel jLabel14;
-    private javax.swing.JLabel jLabel15;
-    private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -1540,14 +1720,13 @@ public class Admin_Events extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane10;
     private javax.swing.JScrollPane jScrollPane11;
     private javax.swing.JScrollPane jScrollPane12;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTabbedPane jTabbedPane2;
-    private javax.swing.JTextField jTextField1;
+    private org.jdesktop.swingx.JXDatePicker jXDatePicker1;
     private javax.swing.JTextField location;
     private javax.swing.JTextField location1;
     private javax.swing.JTextField std_id;

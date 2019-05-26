@@ -86,7 +86,6 @@ catch(Exception e)
         timesee = new javax.swing.JLabel();
         datesee = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
-        book = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -152,17 +151,6 @@ catch(Exception e)
         jPanel1.add(jLabel7);
         jLabel7.setBounds(-20, -10, 210, 120);
 
-        book.setFont(new java.awt.Font("Baskerville Old Face", 1, 16)); // NOI18N
-        book.setText("BOOK");
-        book.setBorder(new javax.swing.border.MatteBorder(null));
-        book.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                bookActionPerformed(evt);
-            }
-        });
-        jPanel1.add(book);
-        book.setBounds(200, 430, 90, 40);
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -176,10 +164,6 @@ catch(Exception e)
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void bookActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bookActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_bookActionPerformed
 
     /**
      * @param args the command line arguments
@@ -218,7 +202,6 @@ catch(Exception e)
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton book;
     private javax.swing.JLabel datesee;
     private javax.swing.JTextPane descsee;
     private javax.swing.JLabel eventnamesee;
